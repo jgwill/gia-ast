@@ -1,3 +1,10 @@
+
+
+# --@STCGoal migrating from : https://github.com/GuillaumeAI/x__etch-a-sketch__210224
+
+
+
+
 #  Work in progress CLI for my AStia Project
 
 (there will be more here some day)
