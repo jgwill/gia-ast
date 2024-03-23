@@ -1,0 +1,39 @@
+{
+  "name": "gia-ast-util",
+  "version": "0.1.6",
+  "description": "CLI wrapper of utilities for AST Servers",
+  "main": "ast",
+  "scripts": {
+    "test": "node gia-ast-util.js sample.jpg"
+  },
+  "bin": {
+    "gia-ast-cat-contentImage": "gia-ast-cat-contentImage.js",
+    "giu-catJsonPropBase64": "gia-ast-cat-contentImage.js",
+    "gia-ast-img2stylize-request": "gia-ast-img2stylize-request.js",
+    "giu-encodeImgFileToJsonPropBase64ToFile": "gia-ast-img2stylize-request.js",
+    "gia-ast-response-stylizedImage2file": "gia-ast-response-stylizedImage2file.js",
+    "giu-decodeJsonBase65ImgPropToFile": "gia-ast-response-stylizedImage2file.js"
+  },
+  "repository": {
+    "bugs": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues",
+    "type": "git",
+    "url": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/tree/main/gia-ast-util",
+    "directory": "/gia-ast-util"
+  },
+  "keywords": [
+    "ast",
+    "image",
+    "cli"
+  ],
+  "author": "Guillaume Descoteaux-Isabelle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues"
+  },
+  "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
+  "dependencies": {
+    "node-cmd": "^4.0.0",
+    "node-powershell": "^4.0.0",
+    "safer-buffer": "^2.1.2"
+  }
+}

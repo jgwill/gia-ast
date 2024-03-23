@@ -1,0 +1,49 @@
+{
+  "name": "gia-ast",
+  "version": "0.4.1",
+  "description": "A CLI Wrapping AST Web API calls to servers",
+  "main": "index.js",
+  "scripts": {
+    "test": "node gia-ast.js sample.jpg 56",
+    "prepack": "node prepack.js",
+    "hum": "git commit gia-ast.js -m version",
+    "postpublish": "node postpublish.js",
+    "prepublish": "npm version patch"
+  },
+  "bin": {
+    "gia-ast": "gia-ast.js",
+    "gia-ast-meta": "gia-ast-meta.js",
+    "gia-astv1": "gia-astv1.js",
+    "gia-ast2": "gia-ast3.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/GuillaumeAI/x__etch-a-sketch__210224.git"
+  },
+  "keywords": [
+    "ast",
+    "astia",
+    "gia",
+    "cli"
+  ],
+  "author": "Guillaume Descoteaux-Isabelle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues"
+  },
+  "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "gia-lib-encoding-base64": "^0.1.2",
+    "http": "^0.0.1-security",
+    "node-fetch": "^2.6.1",
+    "request": "^2.88.2",
+    "safer-buffer": "^2.1.2",
+    "sharp": "^0.31.1",
+    "tempfile": "^3.0.0",
+    "url-exists": "^1.0.3",
+    "uuid": "^8.3.2",
+    "yargs": "^16.2.0"
+  }
+}

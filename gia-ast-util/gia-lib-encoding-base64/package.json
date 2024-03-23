@@ -1,0 +1,25 @@
+{
+  "name": "gia-lib-encoding-base64",
+  "version": "0.1.2",
+  "description": "GIA Encoding-decoding base64 string utilities",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/GuillaumeAI/x__etch-a-sketch__210224.git"
+  },
+  "keywords": [
+    "encoding"
+  ],
+  "author": "Guillaume Descoteaux-Isabelle",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/issues"
+  },
+  "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224/gia-ast-util/gia-lib-encoding-base64#readme",
+  "dependencies": {
+    "safe-buffer": "^5.2.1"
+  }
+}
