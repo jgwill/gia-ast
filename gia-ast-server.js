@@ -3,9 +3,23 @@
 //Run server hosted on HuggingFace
 
 //docker rm astpicasso --force
-const valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot";
+const valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot,pikawill02b";
+//if env var AST_SERVER_CHOICES is set, use that instead
+if (process.env.AST_SERVER_CHOICES) {
+  valid_choices_are = process.env.AST_SERVER_CHOICES;
+}
 const max_retries = 50;
+//if env var AST_SERVER_RETRY_MAX is set, use that instead
+if (process.env.AST_SERVER_RETRY_MAX) {
+  max_retries = process.env.AST_SERVER_RETRY_MAX;
+}
+
 const starting_base_port = 7860;
+//if env var AST_SERVER_BASE_PORT is set, use that instead as starting_base_port
+if (process.env.AST_SERVER_STARTING_BASE_PORT) {
+  starting_base_port = process.env.AST_SERVER_STARTING_BASE_PORT;
+}
+
 
 const { exec } = require('child_process');
 
@@ -118,6 +132,13 @@ function show_valid_choices() {
   for (let choice of valid_choices_are.split(",")) {
     console.log("gia-ast-server --" + choice);
   }
+
+  const DOT_ENV_SERVER = `
+# dotenv for AST Server
+AST_SERVER_CHOICES="picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot,pikawill02b"
+AST_SERVER_RETRY_MAX=60
+AST_SERVER_STARTING_BASE_PORT=7860 
+  `;
 }
 
 function create_docker_run(ast_model = "ast-picasso", local_port = 7860, ns = "jgwill") {
