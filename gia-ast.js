@@ -393,6 +393,7 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = 
         console.log("There was error");
         console.log(err.message);
         console.log("---------arrrr 2");
+        console.log(err);
       });
 
 
