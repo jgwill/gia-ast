@@ -4,15 +4,18 @@
 
 //docker rm astpicasso --force
 const valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot";
+const max_retries = 50;
+const starting_base_port = 7860;
+
+const { exec } = require('child_process');
 
 function main() {
 
-  const { exec } = require('child_process');
   //if cli called with "--picasso", run command above
   if (process.argv[2]) {
 
-    model_name = process.argv[2].replace("--", "").replace("ast", "");
-    container_name = "ast" + model_name;
+    model_name = process.argv[2].replace("--", "").replace("ast-", "").replace("ast", "");
+    container_name = "ast-" + model_name;
 
     //if the argument is not in the list of valid choices, exit
     if (!valid_choices_are.includes(model_name)) {
@@ -37,26 +40,18 @@ function main() {
 
 
 
-      var local_port = 7860;
+      var local_port = starting_base_port;
       if (process.argv[3]) {
         //local port to run the server on
         local_port = process.argv[3];
       }
+      
 
-      var cmd_launcher = create_docker_run(ast_model = container_name, local_port = local_port)
-
-
-      exec(cmd_launcher, (err, stdout, stderr) => {
-        if (err) {
-          console.error(err);
-          return;
-        }
-        console.log(stdout + "\n docker container named" + container_name + " running on port " + local_port);
-        //console.log("docker stop " + container_name + " --force #to remove");
-        console.log("  to stop the container, run : gia-ast-server --" + container_name.replace("ast","") + " --rm");
-        console.log("  the likely url for the API is http://localhost:" + local_port + "/stylize");
-
-      });
+      exit_if_is_container_running(container_name)
+      
+      local_port = launch_server(local_port, container_name);
+      
+      
     }
 
   }
@@ -66,6 +61,44 @@ function main() {
   }
 }
 
+function launch_server(local_port, container_name = "ast-picasso", ns = "guillaumeai") {
+
+  var cmd_launcher = create_docker_run(ast_model = container_name, local_port = local_port, ns = ns);
+  var retryCount = 0;
+  
+  function launchServerWithRetry() {
+    exec(cmd_launcher, (err, stdout, stderr) => {
+      if (err) {
+        if (retryCount > max_retries) console.error(err);
+        if (retryCount < max_retries) {
+          retryCount++;
+          local_port++;
+          cmd_launcher = create_docker_run(ast_model = container_name, local_port = local_port, ns = ns);
+          launchServerWithRetry();
+
+          console.log("container_name: " + container_name + " local_port: " + local_port);
+        } else {
+          console.error("Failed to launch server after maximum retries.");
+        }
+        return;
+      }
+
+      post_launch_output(stdout, local_port);
+    });
+  }
+
+  launchServerWithRetry();
+
+  return local_port;
+}
+
+function post_launch_output(stdout, local_port) {
+  console.log(stdout + "\n docker container named" + container_name + " running on port " + local_port);
+  //console.log("docker stop " + container_name + " --force #to remove");
+  console.log("  to stop the container, run : gia-ast-server --" + container_name.replace("ast", "") + " --rm");
+  console.log("  the likely url for the API is http://localhost:" + local_port + "/stylize");
+}
+
 function show_valid_choices() {
   console.log("valid choices are :");
   for (let choice of valid_choices_are.split(",")) {
@@ -73,12 +106,75 @@ function show_valid_choices() {
   }
 }
 
-function create_docker_run(ast_model = "astpicasso", local_port = 7860) {
-  result = "docker run -d --name " + ast_model + " -p " + local_port + ":7860 --platform=linux/amd64 registry.hf.space/jgwill-" + ast_model + ":latest ";
-  console.log(result);
+function create_docker_run(ast_model = "ast-picasso", local_port = 7860,ns="jgwill") {
+
+  //check if local port is available, if not, increment by 1 until one is available
+  //docker ps  -f publish=$port|grep $port
+  //t_port = get_available_port(local_port); //@STCIssue Bugged
+  t_port = local_port; 
+  if (t_port != local_port) {
+    console.log("port " + local_port + " is taken, using " + t_port + " instead");
+  }
+
+  result = "docker run -d --rm --name " + ast_model + " -p " + t_port + ":7860 --platform=linux/amd64 registry.hf.space/"+ns+"-" + ast_model + ":latest ";
+  //console.log(result);
   return result;
 }
 
+function exit_if_is_container_running(container_name,verbose=true) {
+  var cmd_launcher = "docker ps -q -f name=" + container_name;
+  //console.log("cmd_launcher: " + cmd_launcher);
+  
+  exec(cmd_launcher, (err, stdout, stderr) => {
+    if (err) {
+      console.error(err);
+      return false;
+    }
+    else {
+      if (stdout == "") {
+        if (verbose)        console.log("Launching container..." + container_name + "");
+        return false;
+      }
+      //console.log("stdout: " + stdout);
+      //console.log("stderr: " + stderr);
+      if (verbose)      console.log("container " + container_name + " already running");
+      process.exit(1);
+      return true;
+    }
+  }
+  );
+}
+
+
+function get_available_port(local_port) {
+  //check if local port is available, if not, increment by 1 until one is available
+  //docker ps  -f publish=$port|grep $port
+  used=true;
+  while (used) {
+    //var cmd = "bash -c \"tst=$(docker ps -q -f publish=" + local_port + ");if [ ! -n \"$tst\" ];then echo not used;else echo used;fi\"";// + "|grep " + local_port;
+    // var cmd = "docker ps -q -f publish=" + local_port;// + "|grep " + local_port;
+    var cmd = "docker ps|grep \":" + local_port + "\"";// + "|grep " + local_port;
+    //console.log(cmd);
+    
+    var stdout = exec(cmd, (err, stdout, stderr) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      console.log(stdout);
+      return stdout;
+    });
+
+    if (stdout == "") {
+      used = false;
+    }
+    else {
+      local_port++;
+    }
+
+  
+  }
+}
 
 
 main();
