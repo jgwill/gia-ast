@@ -2,18 +2,15 @@
 //Run server hosted on HuggingFace
 
 //docker rm astpicasso --force
+const valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot"
 
 const { exec } = require('child_process');
 //if cli called with "--picasso", run command above
 if (process.argv[2]) {
 
-  const valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot"
   //if the argument is not in the list of valid choices, exit
   if (!valid_choices_are.includes(process.argv[2])) {
-    console.log("valid choices are :" );
-    for (let choice of valid_choices_are.split(",")) {
-      console.log("gia-ast-server --"+choice);
-    }
+    show_valid_choices();
     return;
   }
   tmp_arg = process.argv[2].replace("--", "").replace("ast", "");
@@ -55,6 +52,16 @@ if (process.argv[2]) {
       console.log("  the likely url for the API is http://localhost:" + local_port + "/stylize");
 
     });
+  }
+}
+else {
+  show_valid_choices();
+}
+
+function show_valid_choices() {
+  console.log("valid choices are :");
+  for (let choice of valid_choices_are.split(",")) {
+    console.log("gia-ast-server --" + choice);
   }
 }
 
