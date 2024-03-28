@@ -12,7 +12,8 @@
   },
   "bin": {
     "gia-ast": "gia-ast.js",
-    "gia-ast-meta": "gia-ast-meta.js"
+    "gia-ast-meta": "gia-ast-meta.js",
+    "gia-ast-server": "gia-ast-server.js"
   },
   "repository": {
     "type": "git",

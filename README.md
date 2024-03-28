@@ -29,14 +29,38 @@ gia-ast sample.jpg 9098
 ### From HuggingFace
 
 ```sh
-docker run -it -p 7860:7860 --platform=linux/amd64 \
-	registry.hf.space/jgwill-astpicasso:latest 
+#launch 
+gia-ast-server --picasso
+```
 
+```sh
+#stylize an image using it
 gia-ast sample.jpg 7860
 
 ```
 
+```sh
+#remove the server
+gia-ast-server --picasso --rm
+```
+
+### Extended
+
+```sh
+#launch on custom port
+gia-ast-server --picasso 8888
+```
+
+```sh
+#stylize an image using it
+gia-ast sample.jpg 8888
+
+```
+
+
 ## dot Env conf example
+
+* It gets created if it does not exist
 
 ```dotenv
 asthostname=localhost
