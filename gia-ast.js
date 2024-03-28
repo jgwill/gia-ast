@@ -207,12 +207,16 @@ Stylize an image using the Web API.
 Synopsis:  
 gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] -a
  
--a  Auto suffix using x1,x2,x3...
+x2 :  on s1 model, x2 is the ABC Enhancement factor (1-99).  On c2 model, its the second resolution.
+
+
+-a  Auto suffix on c2 model using x1,x2,x3...
 
 usage : 
 gia-ast mycontent.jpg 9101
 gia-ast mycontent.jpg 9001
-gia-ast mycontent.jpg 9012 1280 2048 -1 -a
+gia-ast mycontent.jpg 7861 4000 25    (s1)
+gia-ast mycontent.jpg 9012 1280 2048 -1 -a  (c2)
 
 see also:
 gia-ast-server --help
