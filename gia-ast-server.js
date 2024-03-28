@@ -47,9 +47,8 @@ function main() {
       }
       
 
-      exit_if_is_container_running(container_name)
+      exit_if_is_container_running(container_name,local_port)
       
-      local_port = launch_server(local_port, container_name);
       
       
     }
@@ -76,7 +75,7 @@ function launch_server(local_port, container_name = "ast-picasso", ns = "guillau
           cmd_launcher = create_docker_run(ast_model = container_name, local_port = local_port, ns = ns);
           launchServerWithRetry();
 
-          console.log("container_name: " + container_name + " local_port: " + local_port);
+          //console.log("container_name: " + container_name + " local_port: " + local_port);
         } else {
           console.error("Failed to launch server after maximum retries.");
         }
@@ -93,10 +92,10 @@ function launch_server(local_port, container_name = "ast-picasso", ns = "guillau
 }
 
 function post_launch_output(stdout, local_port) {
-  console.log(stdout + "\n docker container named" + container_name + " running on port " + local_port);
+  console.log(stdout + "\n---------------\n>docker container named: " + container_name + " launched on port :" + local_port);
   //console.log("docker stop " + container_name + " --force #to remove");
-  console.log("  to stop the container, run : gia-ast-server --" + container_name.replace("ast", "") + " --rm");
-  console.log("  the likely url for the API is http://localhost:" + local_port + "/stylize");
+  console.log(">  to stop the container, run : gia-ast-server --" + container_name.replace("ast", "") + " --rm");
+  console.log(">  the likely url for the API is http://localhost:" + local_port + "/stylize" + "\n>     gia-ast my_image.jpg "+local_port);
 }
 
 function show_valid_choices() {
@@ -121,8 +120,9 @@ function create_docker_run(ast_model = "ast-picasso", local_port = 7860,ns="jgwi
   return result;
 }
 
-function exit_if_is_container_running(container_name,verbose=true) {
-  var cmd_launcher = "docker ps -q -f name=" + container_name;
+function exit_if_is_container_running(container_name,local_port,callback_not_running,verbose=true) {
+  
+  var cmd_launcher = "echo $(for i in $(docker ps|grep "+container_name+");do echo $i|grep \"0.0.0.0:\";done)|tr \":\" \" \"|tr \"-\" \" \"|awk '{print $2}'"
   //console.log("cmd_launcher: " + cmd_launcher);
   
   exec(cmd_launcher, (err, stdout, stderr) => {
@@ -131,13 +131,19 @@ function exit_if_is_container_running(container_name,verbose=true) {
       return false;
     }
     else {
-      if (stdout == "") {
+      if (stdout == "" || stdout == " " || stdout.length < 3){
         if (verbose)        console.log("Launching container..." + container_name + "");
+
+        local_port = launch_server(local_port, container_name);
+
+        if (callback_not_running) callback_not_running()
+        
         return false;
       }
       //console.log("stdout: " + stdout);
       //console.log("stderr: " + stderr);
-      if (verbose)      console.log("container " + container_name + " already running");
+      if (verbose)      console.log("Container " + container_name + " already running on port:" + stdout);
+      
       process.exit(1);
       return true;
     }

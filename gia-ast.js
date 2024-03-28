@@ -214,6 +214,10 @@ gia-ast mycontent.jpg 9101
 gia-ast mycontent.jpg 9001
 gia-ast mycontent.jpg 9012 1280 2048 -1 -a
 
+see also:
+gia-ast-server --help
+gia-ast-meta --help
+
 ------------------------------
   `);
   if (!args[0] || !args[1]) console.log("MISSING ARGUMENTS");
