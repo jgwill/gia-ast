@@ -2,7 +2,7 @@
 //Run server hosted on HuggingFace
 
 //docker rm astpicasso --force
-const valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot"
+const valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot";
 
 const { exec } = require('child_process');
 //if cli called with "--picasso", run command above
