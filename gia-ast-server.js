@@ -32,7 +32,8 @@ function main() {
             console.error(err);
             return;
           }
-          console.log("container " + container_name + " pulled");
+          console.log(stdout);
+          console.log("Container " + container_name + " pulled");
           //exit the process
           process.exit(1);
         });
