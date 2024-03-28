@@ -144,6 +144,44 @@ export astcallprotocol="http"
 export astcallmethod="stylize"
 `;
 
+
+
+const default_dot_env = `
+
+# AST 
+
+asthostname=localhost
+astoutsuffix=__sty__
+astcallprotocol=http
+astcallmethod=/stylize
+astmetaportnum=8999
+astusemetasvr=true
+astdebug=false
+astsavemeta=true
+astcleanname=true
+astappendmodelid=false
+echocmd=false
+devmode=false
+astmetaoutputdir=.astmeta
+res1=1500
+
+icdirbase=/a/albums/creations
+webdir=/kwww/html/astia/albums
+`;
+
+//if no .env, create one using default_dot_env
+try {
+  if (!fs.existsSync('.env')) {
+    fs.writeFileSync('.env', default_dot_env);
+    console.log(".env file created with default values");
+  }
+}
+catch (error) {
+  console.log("Error creating .env file");
+}
+
+
+
 try {
   //console.log("Do we have a dot env ??");
   var tst = require('dotenv').config()

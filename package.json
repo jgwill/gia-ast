@@ -12,9 +12,7 @@
   },
   "bin": {
     "gia-ast": "gia-ast.js",
-    "gia-ast-meta": "gia-ast-meta.js",
-    "gia-astv1": "gia-astv1.js",
-    "gia-ast2": "gia-ast3.js"
+    "gia-ast-meta": "gia-ast-meta.js"
   },
   "repository": {
     "type": "git",
