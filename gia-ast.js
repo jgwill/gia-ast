@@ -93,6 +93,9 @@ export astcallprotocol="http"
 export astcallmethod="stylize"
 `;
 const default_dot_env = `
+
+# AST 
+
 asthostname=localhost
 astoutsuffix=__sty__
 astcallprotocol=http
@@ -107,6 +110,7 @@ echocmd=false
 devmode=false
 astmetaoutputdir=.astmeta
 res1=1500
+
 `;
 
 //if no .env, create one using default_dot_env
