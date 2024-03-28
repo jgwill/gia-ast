@@ -5,9 +5,8 @@
 
 
 
-#  Work in progress CLI for my AStia Project
+# AStia Project
 
-(there will be more here some day)
 
 Basically, it connects to the Astia Server.
 
@@ -20,17 +19,29 @@ npm i gia-ast gia-ast-util --g
 
 ## Use sample
 ```sh
-gia-ast sample.jpg 98
-gia-ast-meta sample.jpg 2000 -1 -a
+gia-ast sample.jpg 9098
+
+
+```
+
+## Run a Server
+
+### From HuggingFace
+
+```sh
+docker run -it -p 7860:7860 --platform=linux/amd64 \
+	registry.hf.space/jgwill-astpicasso:latest 
+
+gia-ast sample.jpg 7860
 
 ```
 
 ## dot Env conf example
 
 ```dotenv
-asthostname=orko.guillaumeisabelle.com
+asthostname=localhost
 astoutsuffix=__stylized__
-astportbase=91
+astportbase=78
 astcallprotocol=https
 astcallmethod=/stylize
 
