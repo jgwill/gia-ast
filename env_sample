@@ -1,10 +1,21 @@
-asthostname=orko.guillaumeisabelle.com
-astoutsuffix=__stylized__
+
+# AST 
+
+asthostname=localhost
+astoutsuffix=__sty__
 astportbase=90
 astcallprotocol=http
 astcallmethod=/stylize
 astmetaportnum=8999
 astusemetasvr=true
-astdebug=true
+astdebug=false
 astsavemeta=true
+astcleanname=true
 astappendmodelid=false
+echocmd=false
+devmode=false
+astmetaoutputdir=.astmeta
+res1=1500
+
+icdirbase=/a/albums/creations
+webdir=/kwww/html/astia/albums

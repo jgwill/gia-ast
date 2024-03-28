@@ -27,9 +27,9 @@ var args = process.argv.slice(2);
 if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
   console.log(`
 -------------------------------------
-AST Web API Stylizer CLI Wrapper
-by Guillaume D-Isabelle, 2023-02-01
-Version 0.4.1
+AST Web API Stylizer CLI Wrapper - (with Meta server)
+by Guillaume D-Isabelle, 2024
+Version 0.4.x
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
@@ -67,6 +67,13 @@ devmode=true
 astmetaoutputdir=.astmeta
 src=config.js
 res1=333
+
+
+---- Run Meta server
+docker run -d --restart unless-stopped --name ast_meta_server -p 8999:8080 -v /a/src/rwml__adaptive_style_transfer:/work -v /www/astia/info:/wwwmeta docker.io/guillaumeai/server:http-server http-server -p 8080 /wwwmeta
+## Works with : github.com:GuillaumeAI/rwml__adaptive_style_transfer.git
+
+
   `);
   if (!args[0] || !args[1]) console.log("MISSING ARGUMENTS");
 
@@ -75,60 +82,7 @@ res1=333
 }
 
 
-//----for later
 
-// const yargs = require('yargs');
-// var ver = yargs.version();
-
-// var appStartMessage = 
-// `Multi platform Contact Sheet maker
-// By Guillaume Descoteaux-Isabelle, 2020-2021
-// version ${ver}
-// ----------------------------------------`;
-// //const { argv } = require('process');
-// //const { hideBin } = require('yargs/helpers')
-// const argv = yargs(process.argv)
-
-// .scriptName("gis-csm")
-// .usage(appStartMessage)
-//     // .command('serve [port]', 'start the server', (yargs) => {
-//     //   yargs
-//     //     .positional('f', {
-//     //       describe: 'port to bind on',
-//     //       type:'string',
-//     //       default: 5000
-//     //     })
-//     // }, (argv) => {
-//     //   if (argv.verbose) console.info(`start server on :${argv.port}`)
-//     //   //serve(argv.port)
-//     //   console.log("test");
-//     //   console.info(`start server on :${argv.port}`)
-//     // })
-//     .option('file', {
-//       alias: 'f',
-//       type: 'string',
-//       description: 'Specify the file out'
-//     })
-//     .option('directory', {
-//       alias: 'd',
-//       type: 'boolean',
-//       default:false,
-//       description: 'Name the output using current Basedirname'
-//     }).usage(`gis-csm -d --label  # Assuming this file in directory: vm_s01-v01_768x___285k.jpg
-//     # will extract 285 and add that instead of filename`)
-//     .option('verbose', {
-//       alias: 'v',
-//       default:false,
-//       type: 'boolean',
-//       description: 'Run with verbose logging'
-//     })
-//     .option('label', {
-//       alias: 'l',
-//       type: 'boolean',
-//       default:false,
-//       description: 'Label using last digit in filename (used for parsing inference result that contain checkpoint number)'
-//     })
-//   .argv;
 
 
 //-----------
@@ -137,7 +91,8 @@ var config = null;
 
 const envListHelp = `
 vi ~/.bash_env
-export asthostname="orko.guillaumeisabelle.com"
+#export asthostname="orko.guillaumeisabelle.com"
+asthostname=localhost
 export astoutsuffix="__stylized__"
 export astportbase=90
 export astcallprotocol="http"

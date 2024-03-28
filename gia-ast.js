@@ -198,8 +198,8 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
   console.log(`
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
-by Guillaume D-Isabelle, 2021
-Version 0.2.4
+by Guillaume D-Isabelle, 2024
+Version 0.4.x
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
@@ -210,9 +210,9 @@ gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] -a
 -a  Auto suffix using x1,x2,x3...
 
 usage : 
-gia-ast mycontent.jpg 91
-gia-ast mycontent.jpg 01
-gia-ast mycontent.jpg 12 1280 2048 -1 -a
+gia-ast mycontent.jpg 9101
+gia-ast mycontent.jpg 9001
+gia-ast mycontent.jpg 9012 1280 2048 -1 -a
 
 ------------------------------
   `);
