@@ -86,7 +86,8 @@ const envListHelp = `
 vi ~/.bash_env
 export asthostname="orko.guillaumeisabelle.com"
 export astoutsuffix="__stylized__"
-export astportbase=90
+#export astportbase=90 #DEPRECATED, use full port ex.  9001,7860
+# Using two digits will use the portbase anyway
 export astcallprotocol="http"
 export astcallmethod="stylize"
 `;
@@ -234,7 +235,11 @@ else // Lets do the work
 }
 
   console.log("TargetOutput: " + targetOutput);
-  var portnum = config.portbase + modelid;
+  var portnum = modelid;
+  //if length is 2, we will use the full port number
+  if (modelid.length == 2)  
+	portnum = config.portbase + modelid;
+  
 
   const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + "/" + config.callmethod.replace("/", "");
 
