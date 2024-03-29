@@ -2,19 +2,24 @@
 
 //Run server hosted on HuggingFace
 
+//load .env in $HOME
+var tst = require('dotenv').config({ path: process.env.HOME + '/.env' });
+
+
+
 //docker rm astpicasso --force
-const valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot,pikawill02b";
+var valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot,pikawill02b";
 //if env var AST_SERVER_CHOICES is set, use that instead
 if (process.env.AST_SERVER_CHOICES) {
   valid_choices_are = process.env.AST_SERVER_CHOICES;
 }
-const max_retries = 50;
+var max_retries = 50;
 //if env var AST_SERVER_RETRY_MAX is set, use that instead
 if (process.env.AST_SERVER_RETRY_MAX) {
   max_retries = process.env.AST_SERVER_RETRY_MAX;
 }
 
-const starting_base_port = 7860;
+var starting_base_port = 7860;
 //if env var AST_SERVER_BASE_PORT is set, use that instead as starting_base_port
 if (process.env.AST_SERVER_STARTING_BASE_PORT) {
   starting_base_port = process.env.AST_SERVER_STARTING_BASE_PORT;
