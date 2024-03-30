@@ -32,6 +32,7 @@
   },
   "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
   "dependencies": {
+    "gia-lib-encoding-base64": "^0.1.4",
     "node-cmd": "^4.0.0",
     "node-powershell": "^4.0.0",
     "safer-buffer": "^2.1.2"
