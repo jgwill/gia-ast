@@ -23,8 +23,8 @@ const sharp = require('sharp');
 var args = process.argv.slice(2);
 
 
-
-if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
+if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || ((!args[0] && !process.env.AST_STYLIZE_FILENAME) || 
+  (!args[1] && !process.env.AST_STYLIZE_PORT ))) {
   console.log(`
 -------------------------------------
 AST Web API Stylizer CLI Wrapper - (with Meta server)
@@ -70,7 +70,7 @@ res1=333
 
 
 ---- Run Meta server
-docker run -d --restart unless-stopped --name ast_meta_server -p 8999:8080 -v /a/src/rwml__adaptive_style_transfer:/work -v /www/astia/info:/wwwmeta docker.io/guillaumeai/server:http-server http-server -p 8080 /wwwmeta
+docker run -d --restart unless-stopped --name ast_meta_server -p 8999:8080 -v /a/src/rwml__adaptive_style_transfer:/work -v $HOME/.gia/ast/www/meta:/wwwmeta docker.io/guillaumeai/server:http-server http-server -p 8080 /wwwmeta
 ## Works with : github.com:GuillaumeAI/rwml__adaptive_style_transfer.git
 
 
@@ -90,7 +90,7 @@ docker run -d --restart unless-stopped --name ast_meta_server -p 8999:8080 -v /a
 var config = null;
 
 const envListHelp = `
-vi ~/.bash_env
+vi ~/.env
 #export asthostname="orko.guillaumeisabelle.com"
 asthostname=localhost
 export astoutsuffix="__stylized__"
@@ -232,7 +232,8 @@ try {
 
 var stylizedImage;
 var imgFile = args[0];
-var x1, x2, x3 = -1;
+var x1, x2 = 0;
+var c1 = 0;
 var xname = "";
 var autosuffix = false;
 var ext = path.extname(imgFile);
@@ -247,44 +248,55 @@ var targetResolutionX = 768; //DEPRECATING
 //   targetResolutionX = Number(args[2]);
 // }
 
-if (args[2]) { x1 = Number(args[2]); } else x1 = -1
-if (args[3]) { x2 = Number(args[3]); } else x2 = -1
-if (args[4]) { x3 = Number(args[4]); } else x3 = -1
+if (args[2]) { x1 = Number(args[2]); } else x1 = 0
+if (args[3]) { x2 = Number(args[3]); } else x2 = 0
+if (args[4]) { c1 = Number(args[4]); } else c1 = 0
 
-var autosuffixSuffix = "__";
-if (args[5] && args[5] == "-a") { autosuffix = true; } else autosuffix = false;
-if (args[6]) { autosuffixSuffix = args[6]; }
+if (x2 < 99 && x2 > -99 && c1 == 0) c1 = x2;
 
-// console.log(`
-// x1:${x1}
-// x2:${x2}
-// x3:${x3}
-// `);
-//process.exit(1);
+var autosuffixSuffix = "__";//DEPRECATED
+if (args[5] && args[4] && args[3] && (args[5] == "-a" || args[4] == "-a" || args[3] == "-a")) { autosuffix = true; } else autosuffix = false;
+if (args[6]) { autosuffixSuffix = args[6]; } //DEPRECATED
+
+
 
 //ModelID is related to a port will use
-var modelid = args[1];
+var modelid,portnum = 0;
+if (args[1]) {
+  modelid = args[1];
+}
+else {
+  //read AST_MODEL_PORT
+  if (process.env.AST_MODEL_PORT) 
+    modelid = process.env.AST_MODEL_PORT;
+}
+
+if (modelid.length > 2)
+  portnum = modelid; //Enable full use of the Port on another range than the port base
+else if (modelid.length == 2) portnum = config.portbase + modelid;
+
+
+
 var targetOutput = imgFileNameOnly + config.outsuffix + modelid + ext;
 
 if (autosuffix) {
   var x1str = x1 != -1 ? x1 + "x" : "";
   var x2str = x2 != -1 ? x2 + "x" : "";
-  var x3str = x3 != -1 ? x3 + "x" : "";
-  if (x3 == -1) x2str = x2;
-  xname = x1str + x2str + x3str;
+
+
+  xname = x1str + x2str;
   targetOutput = imgFileNameOnly + "__" + xname + autosuffixSuffix + modelid + ext;
 }
-    //@STCGoal Stuff we do not really want be removed from filename
-    if (config.astcleanname) { //astcleanname
+//@STCGoal Stuff we do not really want be removed from filename
+if (config.astcleanname) { //astcleanname
 
-    targetOutput = make_astcleanname(targetOutput);
-  }
+  targetOutput = make_astcleanname(targetOutput);
+}
 
 
 
-//console.log("TargetOutput: " + targetOutput);
-var portnum = config.portbase + modelid;
-if (modelid.length > 2) portnum = modelid; //Enable full use of the Port on another range than the port base
+
+
 
 const callurl = `${config.callprotocol}://${config.hostname}:${portnum}/${config.callmethod.replace("/", "")}`;
 const callurlmeta = `${config.callprotocol}://${config.hostname}:${config.metaportnum}/${portnum}.json`;
@@ -348,33 +360,33 @@ function doWeResize(imgFile, config, portnum, callurl, callurlmeta, targetOutput
 
 
 function make_astcleanname(_targetOutput) {
-  
+
   var r = _targetOutput
-  .replace("model_gia-ds-", "")
-  .replace("_ast_", "")
-  .replace("gia-ds-", "")
-  .replace("model_gia-", "")
-  .replace("model_", "")
-  .replace("-1-1-", "_")
-  .replace("-1-", "_")
-  .replace("-1", "_")
-  .replace("-x_", "_")
-  .replace("___", "__")
-  .replace("-864x_new", "")
-  .replace("-864x_", "");
+    .replace("model_gia-ds-", "")
+    .replace("_ast_", "")
+    .replace("gia-ds-", "")
+    .replace("model_gia-", "")
+    .replace("model_", "")
+    .replace("-1-1-", "_")
+    .replace("-1-", "_")
+    .replace("-1", "_")
+    .replace("-x_", "_")
+    .replace("___", "__")
+    .replace("-864x_new", "")
+    .replace("-864x_", "");
   // console.log("Cleaning the name: " + _targetOutput);
-    return r;
+  return r;
 }
 
-var metaretry=3;
+var metaretry = 3;
 
-function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
+function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x1 = 0, x2 = 0, c1 = 0, use_meta_filename_v2 = true, autosuffix = false, suffix = "") {
   try {
 
     var data;
     try {
       data = giaenc.
-        encFileToJSONStringifyBase64PropWithOptionalResolutions(cFile, "contentImage", x1, x2, x3);
+        encFileToJSONStringifyBase64PropWithX2Abc(cFile, "contentImage", x1, x2, c1, suffix);
 
     } catch (error) {
       process.exit(1);
@@ -424,7 +436,9 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
         // decode_base64_to_file(stylizedImage, targetOutput);
         if (config.debug) fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
 
-        if (!config.usemetasvr) {
+        if (!config.usemetasvr || (use_meta_filename_v2 && data["filename"] != null)) {
+          if (use_meta_filename_v2 && data["filename"] != null)
+            targetOutput = data["filename"];
           saveStylizedResult(stylizedImage, data, targetOutput, config);
         }
         else {
@@ -457,7 +471,7 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
                 targetOutput = make_astcleanname(targetOutput);
               }
-             // console.log(targetOutput);
+              // console.log(targetOutput);
 
               // targetOutput = imgFileNameOnly + "__" + mtag + autosuffixSuffix + modelid + ext;
               //process.exit(1);
@@ -465,13 +479,12 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
             })
             .catch(function (errMeta) {
-              if (metaretry> 0)
-              {
-                  //Launch the docker container
-                  startmeta();
-                  metaretry = metaretry -1;
-                  console.log("\t Retrying to launch this function to do the work with the Meta hopefully started");
-                  doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x1 , x2 , x3 , autosuffix );
+              if (metaretry > 0) {
+                //Launch the docker container
+                startmeta();
+                metaretry = metaretry - 1;
+                console.log("\t Retrying to launch this function to do the work with the Meta hopefully started");
+                doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x1, x2, x3, autosuffix);
 
               }
               else {
@@ -480,7 +493,7 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
                 console.log("---------------------------------------------------");
                 console.log(errMeta.message);
                 console.log("---------------------------------------------------");
-                
+
                 console.log("---------------------------------------------------");
                 console.log("---------TRYING TO SAVE  WITHOUT META SERVER DATA----------");
                 console.log("---------------------------------------------------");
@@ -488,13 +501,13 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
                 console.log("---------Or start the server ------");
                 console.log("--");
                 console.log("---------------------------------------------------");
-                
+
                 saveStylizedResult(stylizedImage, data, targetOutput, config);
                 process.exit(3);
               }
-              });
-              
-              //@a then save result
+            });
+
+          //@a then save result
           // saveStylizedResult(stylizedImage, targetOutput, config);
         }
 
@@ -555,19 +568,19 @@ function saveStylizedResult(stylizedImage, data, targetOutput, config, metaData 
 
 
 
-function startmeta(){
+function startmeta() {
 
   const { exec } = require("child_process");
 
-exec("docker start ast_meta_server", (error, stdout, stderr) => {
+  exec("docker start ast_meta_server", (error, stdout, stderr) => {
     if (error) {
-        console.log(`error: ${error.message}`);
-        return;
+      console.log(`error: ${error.message}`);
+      return;
     }
     if (stderr) {
-        console.log(`stderr: ${stderr}`);
-        return;
+      console.log(`stderr: ${stderr}`);
+      return;
     }
     console.log(`stdout: ${stdout}`);
-});
+  });
 }

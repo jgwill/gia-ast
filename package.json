@@ -33,8 +33,11 @@
   "homepage": "https://github.com/GuillaumeAI/x__etch-a-sketch__210224#readme",
   "dependencies": {
     "axios": "^0.21.1",
+    "cheerio": "^1.0.0-rc.12",
+    "dockerode": "^4.0.2",
     "dotenv": "^10.0.0",
-    "gia-lib-encoding-base64": "^0.1.2",
+    "gia-ast-util": "^0.1.7",
+    "gia-lib-encoding-base64": "^0.1.4",
     "http": "^0.0.1-security",
     "node-fetch": "^2.6.1",
     "request": "^2.88.2",

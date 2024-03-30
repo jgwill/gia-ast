@@ -5,7 +5,7 @@
 const giaenc = require("gia-lib-encoding-base64");
 
 
-
+//console.log("gia-ast.js - 240329");
 
 const http = require('http');
 const https = require('https');
@@ -193,8 +193,9 @@ try {
   }
 }
 
-
-if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || !args[0] || !args[1]) {
+//AST_STYLIZE_PORT
+if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "--h" || ((!args[0] && !process.env.AST_STYLIZE_FILENAME) || 
+  (!args[1] && !process.env.AST_STYLIZE_PORT ))) {
   console.log(`
 -------------------------------------
 AST Web API Stylizer CLI Wrapper
@@ -218,6 +219,16 @@ gia-ast mycontent.jpg 9001
 gia-ast mycontent.jpg 7861 4000 25    (s1)
 gia-ast mycontent.jpg 9012 1280 2048 -1 -a  (c2)
 
+export AST_STYLIZE_PORT=9860
+export AST_STYLIZE_RES=1500
+export AST_STYLIZE_ABC=34
+gia-ast mycontent.jpg
+export AST_STYLIZE_FILENAME=image.png
+gia-ast
+
+# Open the image with feh
+FEH=1 gia-ast mycontent.jpg 9101
+
 see also:
 gia-ast-server --help
 gia-ast-meta --help
@@ -230,8 +241,9 @@ else // Lets do the work
 {
 
   var stylizedImage;
-  var imgFile = args[0];
-  var x1, x2, x3 = -1;
+  var imgFile = args[0]|| process.env.AST_STYLIZE_FILENAME;
+  var x1, x2  = 0;
+  var c1 = 0;
   var autosuffix = false;
   var ext = path.extname(imgFile);
   var imgFileBasename = path.basename(imgFile);
@@ -244,48 +256,77 @@ else // Lets do the work
   //   resizeSwitch = true;
   //   targetResolutionX = Number(args[2]);
   // }
+  
+  if (args[2]) { x1 = Number(args[2]); } else x1 = 0
+  if (args[3]) { x2 = Number(args[3]); } else x2 = 0
+  if (args[4]) { c1 = Number(args[4]); } else c1 = 0
 
-  if (args[2]) { x1 = Number(args[2]); } else x1 = -1
-  if (args[3]) { x2 = Number(args[3]); } else x2 = -1
-  if (args[4]) { x3 = Number(args[4]); } else x3 = -1
+  if (x1 == 0 && (process.env.AST_STYLIZE_RES1 || process.env.AST_STYLIZE_RES) ) x1= process.env.AST_STYLIZE_RES1 || process.env.AST_STYLIZE_RES;
 
-  var autosuffixSuffix = "__";
-  if (args[5] && args[5] == "-a") { autosuffix = true; } else autosuffix = false;
- if (args[6]) { autosuffixSuffix = args[6] ; }
+  if (x2 == 0 && process.env.AST_STYLIZE_RES2 ) x2= process.env.AST_STYLIZE_RES2 ;
 
-  // console.log(`
-  // x1:${x1}
-  // x2:${x2}
-  // x3:${x3}
-  // `);
-  //process.exit(1);
+  if (c1 == 0 && process.env.AST_STYLIZE_ABC  ) c1= process.env.AST_STYLIZE_ABC;
+  
+
+  if (x2 < 99 && x2 > -99 && c1 == 0) c1 = x2;
+
+
+
+
+  var autosuffixSuffix = "__";//DEPRECATED
+  if (args[5] && args[4] && args[3] && (args[5] == "-a" || args[4] == "-a"|| args[3] == "-a")) { autosuffix = true; } else autosuffix = false;
+   if (args[6]) { autosuffixSuffix = args[6] ; } //DEPRECATED
+
 
   //ModelID is related to a port will use
-  var modelid = args[1];
+  
+
+
+  //ModelID is related to a port will use
+  var modelid,portnum = 0;
+  if (args[1]) {
+    modelid = args[1];
+  }
+  else {
+    //read AST_STYLIZE_PORT
+    if (process.env.AST_STYLIZE_PORT) 
+      modelid = process.env.AST_STYLIZE_PORT;
+  }
+
+  if (modelid.length > 2)
+    portnum = modelid; //Enable full use of the Port on another range than the port base
+  else if (modelid.length == 2) portnum = config.portbase + modelid;
+
+
+
+
   var targetOutput = imgFileNameOnly + config.outsuffix + modelid + ext;
 
-  if (autosuffix) 
-{  
-  var x1str = x1 != -1 ? x1+"x":"";
-  var x2str = x2 != -1 ? x2+"x":"";
-  var x3str = x3 != -1 ? x3+"x":"";
-  if (x3== -1) x2str = x2;
-  
-  targetOutput = imgFileNameOnly + "__" +x1str + x2str + x3str + autosuffixSuffix  + modelid + ext;
-}
+  if (autosuffix) //@STCIssue DEPRECATED
+  {  
+    var x1str = x1 != 0 ? x1+"x":"";
+    var x2str = x2 != 0 ? x2+"x":"";
+    
+    
+    if (c1 != 0)
+    {
+      x1str = x1str + c1;
+    }
+    
+    targetOutput = imgFileNameOnly + "__" +x1str + x2str  + autosuffixSuffix  + modelid + ext;
+  }
 
-  console.log("TargetOutput: " + targetOutput);
-  var portnum = modelid;
-  //if length is 2, we will use the full port number
-  if (modelid.length == 2)  
-	portnum = config.portbase + modelid;
+
+  //console.log(" TargetOutput: " + targetOutput);
+  
+  
   
 
   const callurl = config.callprotocol + "://" + config.hostname + ":" + portnum + "/" + config.callmethod.replace("/", "");
 
 
 
-  console.log("Processing: " + imgFile + " at port :" + portnum);
+  //console.log(" : " + imgFile + " at port :" + portnum) +" with targetoutput:"+ targetOutput;
 
   /*
   //Use later to resized the image if switch used
@@ -298,7 +339,7 @@ else // Lets do the work
     .catch( err => { ... });
     */
   //  doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch, targetResolutionX);
-  doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, x2, x3, autosuffix);
+  doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, x2, c1, autosuffix);
 
 
 }
@@ -340,11 +381,13 @@ function doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitc
 }
 
 
-function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = -1, x3 = -1, autosuffix = false) {
+function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = 0, x2 = 0, c1 = 0, autosuffix = false,use_meta_filename_v2=true,suffix="none") {
   try {
 
+    if (x2 == c1 ) x2 = 0;
+
     var data = giaenc.
-      encFileToJSONStringifyBase64PropWithOptionalResolutions(cFile, "contentImage", x1, x2, x3);
+      encFileToJSONStringifyBase64PropWithX2Abc(cFile, "contentImage", x1, x2, c1, suffix);
     // if (x1 != -1) data.x1= x1;
     // if (x2 != -1) data.x2= x2;
     // if (x3 != -1) data.x3= x3;
@@ -368,7 +411,7 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = 
 
     };
 
-    console.log("Calling : " + config.hostname + ":" + portnum);
+    //console.log("Calling : " + config.hostname + ":" + portnum);
 
     axios.post(callurl, data, options)
       .then(function (response) {
@@ -379,7 +422,12 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = 
 
         //---import
         // decode_base64_to_file(stylizedImage, targetOutput);
-        if (config.debug == "true") fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
+        if (config.debug == "true") 
+          fs.writeFileSync("__stylizedImage.json", JSON.stringify(data));
+
+        //if use_meta_name, use the meta name included in the data response 
+        if (use_meta_filename_v2  && data["filename"] != null)
+          targetOutput = data["filename"];
 
         giaenc.dec64_StringToFile(stylizedImage, targetOutput);
 
@@ -388,7 +436,19 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = -1, x2 = 
           fs.writeFileSync(targetOutput + ".json", JSON.stringify(data));
         }
 
-        console.log("A stylizedImage should be available at that path :\n    feh " + targetOutput);
+        const feh_cmd = "A stylizedImage should be available at that path :\n    feh " + targetOutput;
+        //if env FEH=1, run feh
+        if (process.env.FEH == 1) {
+          const { exec } = require('child_process');
+          exec("feh " + targetOutput, (error, stdout, stderr) => {
+            if (error) {
+              console.error(`exec error: ${error}`);
+              return;
+            }
+            
+          });
+        }
+        else    console.log(feh_cmd);
 
 
         //console.log(stylizedImage);
