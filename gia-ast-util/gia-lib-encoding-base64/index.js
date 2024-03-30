@@ -121,6 +121,9 @@ module.exports = {
 		 * Encode an image file into base64 JSON file under a target property 
 		 * @param  {string} filename
 		 * @param  {string} targetProp
+		 * @param  {number} x1
+		 * @param  {number} x2
+		 * @param  {number} x3
 		 */
 		function (filename, targetProp, x1 = -1, x2 = -1, x3 = -1) {
 			var base64 = this.encFileToBase64String(filename);
@@ -137,6 +140,33 @@ module.exports = {
 
 			return jsonData;
 
-		}
+		},
+	
+		encFileToJSONStringifyBase64PropWithX2Abc:
+			/**
+			 * Encode an image file into base64 JSON file under a target property 
+			 * @param  {string} filename
+			 * @param  {string} targetProp
+			 * @param  {number} x1 Resolution 1
+			 * @param  {number} x2 Resolution 2
+			 * @param  {number} c1 ABC Correction
+			 */
+			function (filename, targetProp, x1 = -1, x2 = -1, c1 = 0) {
+				var base64 = this.encFileToBase64String(filename);
+	
+				//console.log(base64);
+				var jsonRequest = new Object();
+				jsonRequest[targetProp] = base64;
+	
+				jsonRequest.x1 = x1;
+				jsonRequest.x2 = x2;
+				jsonRequest.c1 = c1;
+				jsonRequest.fn=filename;
+	
+				var jsonData = JSON.stringify(jsonRequest);
+	
+				return jsonData;
+	
+			}
 
 }
