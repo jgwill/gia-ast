@@ -151,7 +151,7 @@ module.exports = {
 			 * @param  {number} x2 Resolution 2
 			 * @param  {number} c1 ABC Correction
 			 */
-			function (filename, targetProp, x1 = -1, x2 = -1, c1 = 0) {
+			function (filename, targetProp, x1 = -1, x2 = -1, c1 = 0,suffix="none") {
 				var base64 = this.encFileToBase64String(filename);
 	
 				//console.log(base64);
@@ -162,6 +162,7 @@ module.exports = {
 				jsonRequest.x2 = x2;
 				jsonRequest.c1 = c1;
 				jsonRequest.fn=filename;
+				jsonRequest.suffix=suffix;
 	
 				var jsonData = JSON.stringify(jsonRequest);
 	
