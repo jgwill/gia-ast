@@ -29,7 +29,7 @@ if (args[0] == "--help" || args[0] == "-h" || args[0] == "-help" || args[0] == "
 -------------------------------------
 AST Web API Stylizer CLI Wrapper - (with Meta server)
 by Guillaume D-Isabelle, 2024
-Version 0.4.x
+Version 1.0.x
 --------------------------------------
 -------------HELP----------------------
 Stylize an image using the Web API.
