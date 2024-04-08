@@ -367,26 +367,24 @@ function doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitc
         console.log("A resized contentImage should be available at that path :\n    feh " + tfile
           + "  \n     with resolution : " + targetResolutionX);
         // process.exit(1); 
-        doTheWork(tfile, config, portnum, callurl, targetOutput);
+        doTheWork(tfile, config, portnum, callurl, targetOutput,x1,c1);
       });
   } else  //no resize command
   {
     console.log("Normal mode");
-    doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, x2, x3);
+    doTheWork(imgFile, config, portnum, callurl, targetOutput, x1,c1);
   }
 
 
 }
 
 
-function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = 0, x2 = 0, c1 = 0, autosuffix = false,use_meta_filename_v2=true,suffix="none") {
+function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = 0, c1 = 0, autosuffix = false,use_meta_filename_v2=true,suffix="none") {
   try {
 
-    if (x2 == c1 ) x2 = 0;
-    x2 = 0;  //@STCIssue 240408 Rendering and Album batch crashes.  That would make d2 and d3 model not to work.
 
     var data = giaenc.
-      encFileToJSONStringifyBase64PropWithX2Abc(cFile, "contentImage", x1, x2, c1, suffix);
+      encFileToJSONStringifyBase64PropWithAbc(cFile, "contentImage", x1, c1, suffix);
     // if (x1 != -1) data.x1= x1;
     
     // if (x3 != -1) data.x3= x3;
