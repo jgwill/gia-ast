@@ -258,6 +258,12 @@ else // Lets do the work
   
   if (args[2]) { x1 = Number(args[2]); } else x1 = 0
   if (args[3]) { c1 = Number(args[3]); } else c1 = 0
+
+  //exit with message if c1 is larger than 99
+  if (c1 > 99) {
+    console.log("c1 value is too high. 0-99 only");
+    process.exit(1);
+  }
   //if (args[4]) { c1 = Number(args[4]); } else c1 = 0
 
   if (x1 == 0 && (process.env.AST_STYLIZE_RES1 || process.env.AST_STYLIZE_RES) ) x1= process.env.AST_STYLIZE_RES1 || process.env.AST_STYLIZE_RES;
