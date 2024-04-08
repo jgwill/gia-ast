@@ -1,6 +1,6 @@
 {
   "name": "gia-lib-encoding-base64",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "GIA Encoding-decoding base64 string utilities",
   "main": "index.js",
   "scripts": {

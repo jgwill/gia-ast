@@ -206,18 +206,17 @@ Version 1.0.x
 Stylize an image using the Web API.
 
 Synopsis:  
-gia-ast <IMAGE-FILENAME> <ModelID> [x1] [x2] [x3] -a
+gia-ast <IMAGE-FILENAME> <ModelID> [x1] [abc] 
  
-x2 :  on s1 model, x2 is the ABC Enhancement factor (1-99).  On c2 model, its the second resolution.
+abc: 0-99
 
 
--a  Auto suffix on c2 model using x1,x2,x3...
 
 usage : 
 gia-ast mycontent.jpg 9101
 gia-ast mycontent.jpg 9001
 gia-ast mycontent.jpg 7861 4000 25    (s1)
-gia-ast mycontent.jpg 9012 1280 2048 -1 -a  (c2)
+
 
 export AST_STYLIZE_PORT=9860
 export AST_STYLIZE_RES=1500
@@ -242,7 +241,7 @@ else // Lets do the work
 
   var stylizedImage;
   var imgFile = args[0]|| process.env.AST_STYLIZE_FILENAME;
-  var x1, x2  = 0;
+  var x1  = 0;
   var c1 = 0;
   var autosuffix = false;
   var ext = path.extname(imgFile);
@@ -258,18 +257,17 @@ else // Lets do the work
   // }
   
   if (args[2]) { x1 = Number(args[2]); } else x1 = 0
-  if (args[3]) { x2 = Number(args[3]); } else x2 = 0
-  if (args[4]) { c1 = Number(args[4]); } else c1 = 0
+  if (args[3]) { c1 = Number(args[3]); } else c1 = 0
+  //if (args[4]) { c1 = Number(args[4]); } else c1 = 0
 
   if (x1 == 0 && (process.env.AST_STYLIZE_RES1 || process.env.AST_STYLIZE_RES) ) x1= process.env.AST_STYLIZE_RES1 || process.env.AST_STYLIZE_RES;
 
-  if (x2 == 0 && process.env.AST_STYLIZE_RES2 ) x2= process.env.AST_STYLIZE_RES2 ;
+  
 
   if (c1 == 0 && process.env.AST_STYLIZE_ABC  ) c1= process.env.AST_STYLIZE_ABC;
   
 
-  if (x2 < 99 && x2 > -99 && c1 == 0) c1 = x2;
-
+  
 
 
 
@@ -305,7 +303,7 @@ else // Lets do the work
   if (autosuffix) //@STCIssue DEPRECATED
   {  
     var x1str = x1 != 0 ? x1+"x":"";
-    var x2str = x2 != 0 ? x2+"x":"";
+    
     
     
     if (c1 != 0)
@@ -313,7 +311,7 @@ else // Lets do the work
       x1str = x1str + c1;
     }
     
-    targetOutput = imgFileNameOnly + "__" +x1str + x2str  + autosuffixSuffix  + modelid + ext;
+    targetOutput = imgFileNameOnly + "__" +x1str   + autosuffixSuffix  + modelid + ext;
   }
 
 
@@ -339,7 +337,7 @@ else // Lets do the work
     .catch( err => { ... });
     */
   //  doWeResize(imgFile, config, portnum, callurl, targetOutput, resizeSwitch, targetResolutionX);
-  doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, x2, c1, autosuffix);
+  doTheWork(imgFile, config, portnum, callurl, targetOutput, x1, c1, autosuffix);
 
 
 }
@@ -385,11 +383,12 @@ function doTheWork(cFile, config, portnum, callurl, targetOutput, x1 = 0, x2 = 0
   try {
 
     if (x2 == c1 ) x2 = 0;
+    x2 = 0;  //@STCIssue 240408 Rendering and Album batch crashes.  That would make d2 and d3 model not to work.
 
     var data = giaenc.
       encFileToJSONStringifyBase64PropWithX2Abc(cFile, "contentImage", x1, x2, c1, suffix);
     // if (x1 != -1) data.x1= x1;
-    // if (x2 != -1) data.x2= x2;
+    
     // if (x3 != -1) data.x3= x3;
 
     //console.log(data);
