@@ -442,8 +442,6 @@ function doTheWork(cFile, config, portnum, callurl, callurlmeta, targetOutput, x
 
               targetOutput = (imgFileNameOnly
                 + "__"
-                + modelid
-                + "__"
                 + mtag
                 + xtraModelID
                 + ext)
