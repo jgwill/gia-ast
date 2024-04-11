@@ -10,7 +10,7 @@ var tst = require('dotenv').config({ path: process.env.HOME + '/.env' });
 
 
 //docker rm astpicasso --force
-var valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot,pikawill02b,pikawill02b-285ik,ap2404_v1-90ik,ap2404_v1-105ik,ap2404_v1-120ik,ap2404_v1-135ik,ap2404_v1-150ik,ap2404_v1-165ik,ap2404_v1-180ik,ap2404_v1-195ik,ap2404_v1-210ik,ap2404_v1-225ik,ap2404_v1-240ik";
+var valid_choices_are = "picasso,van-gogh,roerich,pollock,peploe,munch,monet,kirchner,gauguin,el-greco,cezanne,morisot,pikawill02b,pikawill02b-285ik,ap2404_v1-90ik,ap2404_v1-105ik,ap2404_v1-120ik,ap2404_v1-135ik,ap2404_v1-150ik,ap2404_v1-165ik,ap2404_v1-180ik,ap2404_v1-195ik,ap2404_v1-210ik,ap2404_v1-225ik,ap2404_v1-240ik,ap2404_v1-255ik";
 
 //if env var AST_SERVER_CHOICES is set, use that instead
 if (process.env.AST_SERVER_CHOICES) {
