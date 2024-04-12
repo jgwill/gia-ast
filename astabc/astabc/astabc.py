@@ -1,4 +1,5 @@
 import cv2
+import argparse
 
 def _read_image(filename):
     img = cv2.imread(filename)
@@ -47,3 +48,16 @@ def correct(filename, abc=25, output_filename=None):
     print("Brightness and contrast corrected image saved as", new_filename)
     
     return img, alpha, beta
+
+def main():
+    parser = argparse.ArgumentParser(description='Image Brightness and Contrast Correction')
+    parser.add_argument('filename', type=str, help='input image filename')
+    parser.add_argument('-a','--abc', type=int, default=15, help='automatic brightness and contrast percentage (default: 25)')
+    parser.add_argument('-o','--output', type=str, help='output image filename')
+    
+    args = parser.parse_args()
+    
+    correct(args.filename, args.abc, args.output)
+
+if __name__ == '__main__':
+    main()

@@ -5,12 +5,12 @@ with open("README.md", "r") as fh:
 
 setup(
     name="astabc",
-    version="1.0.0",
+    version="0.1.0",
     author="Guillaume Descoteaux-Isabelle",
     description="A Python module for automatic brightness and contrast optimization",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/jgwill/gia-ast/astabc",
+    url="https://github.com/jgwill/gia-ast/tree/main/astabc",
     packages=["astabc"],
     install_requires=["opencv-python"],
     classifiers=[
