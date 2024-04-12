@@ -4,7 +4,6 @@ import argparse
 def _read_image(filename):
     img = cv2.imread(filename)
     return img
-
 def _automatic_brightness_and_contrast(image, clip_hist_percent=25):
     if isinstance(image, str):
         image = _read_image(image)
@@ -14,9 +13,9 @@ def _automatic_brightness_and_contrast(image, clip_hist_percent=25):
     hist_size = len(hist)
     
     accumulator = []
-    accumulator.append(float(hist[0]))
+    accumulator.append(float(hist[0][0]))  # Extract single element from array
     for index in range(1, hist_size):
-        accumulator.append(accumulator[index - 1] + float(hist[index]))
+        accumulator.append(accumulator[index - 1] + float(hist[index][0]))  # Extract single element from array
     
     maximum = accumulator[-1]
     clip_hist_percent *= maximum / 100.0
@@ -35,7 +34,6 @@ def _automatic_brightness_and_contrast(image, clip_hist_percent=25):
     
     auto_result = cv2.convertScaleAbs(image, alpha=alpha, beta=beta)
     return (auto_result, alpha, beta)
-
 def correct(filename, abc=25, output_filename=None):
     img = _read_image(filename)
     img, alpha, beta = _automatic_brightness_and_contrast(img, abc)
